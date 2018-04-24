@@ -39,7 +39,7 @@ export class AppComponent {
 
   private onVenuesNOk = (response) => {
 
-  };
+  }
   private searchVenues = (position) => {
     const lat = position.coords.latitude;
     const lng = position.coords.longitude;
