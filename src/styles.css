@@ -1,1 +1,38 @@
-/* You can add global styles to this file, and also import other style files */
+
+html,
+body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+#map {
+    height: 100%;
+    border:1px solid royalblue;
+    
+}
+
+.map-container {
+    height: calc(100vh - 110px);
+    left: 42%;
+    position: fixed;
+}
+
+.app-container{
+    margin-top: 60px;
+}
+
+.search-container button {
+    float: right;
+    padding: 6px 10px;
+    margin-top: 8px;
+    margin-right: 16px;
+    background: #ddd;
+    font-size: 17px;
+    border: none;
+    cursor: pointer;
+  }
+  
+  .search-container button:hover {
+    background: #ccc;
+  }

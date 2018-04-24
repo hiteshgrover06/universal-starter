@@ -1,0 +1,39 @@
+<div class="">
+    <div class="row">
+
+        <!-- Search Results -->
+        <div class="col-md-5">
+            <div *ngIf="!VenuesData || !VenuesData.length">
+                <i class="fas fa-spinner fa-spin"></i> Loading...</div>
+            <div *ngFor='let value of VenuesData; trackBy: index;'>
+                <div class="row" id="{{ value.id }}">
+                    <div class="card col-md-">
+                        <img class="card-img-top" src="http://placehold.it/500x325" alt="{{value && value.name}}">
+                        <div class="card-body">
+                            <h4 class="card-title">{{ value && value.name }}</h4>
+                            <p>Category-{{ value.categories && value.categories.length && value.categories[0].name }}</p>
+                            <p>Contact- {{ value.contact.formattedPhone || 'NA' }}</p>
+                            <p>Address- {{ GetFormattedAddressForVenue(value) }}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Search Results ends-->
+
+        <!-- Maps section -->
+        <div class="map-container col-md-7">
+            <div class="card-body">
+                <div class="input-group">
+                    <input class="form-control" id="iconLeft" #searchString type="text" placeholder="Utrecht,NL">
+                    <span class="input-group-btn">
+                        <button class="btn btn-primary" (click)="SearchVenues(searchString.value )" type="button">Go!</button>
+                    </span>
+                </div>
+            </div>
+            <div id="map"></div>
+        </div>
+        <!-- Maps section ends-->
+
+    </div>
+</div>
