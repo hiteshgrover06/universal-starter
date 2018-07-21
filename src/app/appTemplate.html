@@ -1,39 +1,72 @@
-<div class="">
+<div class="container">
+    <div class="row">
+        <!-- Example single danger button -->
+        <div class="btn-group">
+            <button type="button" class="btn btn-danger dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                Action
+            </button>
+            <div class="dropdown-menu">
+                <a class="dropdown-item" href="#">Action</a>
+                <a class="dropdown-item" href="#">Another action</a>
+                <a class="dropdown-item" href="#">Something else here</a>
+                <div class="dropdown-divider"></div>
+                <a class="dropdown-item" href="#">Separated link</a>
+            </div>
+        </div>
+        <div class="col-md-8">
+            <div class="input-group">
+                <input class="form-control" id="iconLeft" #searchString type="text" placeholder="Utrecht,NL">
+                <span class="input-group-btn" >
+                        <i class="fab fa-searchengin"></i>
+                    <!-- <span class="glyphicon glyphicon-search" (click)="Search(searchString.value)"></span> -->
+                    <button class="btn btn-outline-primary" (click)="Search(searchString.value)" type="button">I feel lucky!</button>
+                </span>
+            </div>
+        </div>
+    </div>
     <div class="row">
 
         <!-- Search Results -->
-        <div class="col-md-5">
-            <div *ngIf="!VenuesData || !VenuesData.length">
-                <i class="fas fa-spinner fa-spin"></i> Loading...</div>
-            <div *ngFor='let value of VenuesData; trackBy: index;'>
-                <div class="row" id="{{ value.id }}">
+        <div class="col-md-8 result-section" *ngIf="SearchData && SearchData.items; else elseBlock">
+            <div> About {{SearchData.searchInformation.formattedTotalResults}} results ({{SearchData.searchInformation.formattedSearchTime}}
+                seconds)
+            </div>
+            <div *ngFor='let value of SearchData.items; trackBy: index;'>
+                <div id="{{ value.id }}">
+                    <h5 [innerHTML]="value.htmlTitle"></h5>
+                    <span class="" [innerHTML]="value.htmlSnippet"></span>
+                    <a href="{{value.link}}">{{value.link}}</a>
+                </div> &nbsp;
+            </div>
+
+            <ng-template #elseBlock>Sorry, no results found for your query!</ng-template>
+        </div>
+
+        <!-- Search Results ends-->
+
+        <!-- Search Results logging-->
+        <div class="col-md-4" *ngIf="GetSelectedSearchEngineStats().length">
+            Search History
+            <div *ngFor='let item of GetSelectedSearchEngineStats(); trackBy: index;'>
+                <div id="{{index}}">
                     <div class="card col-md-">
-                        <img class="card-img-top" src="http://placehold.it/500x325" alt="{{value && value.name}}">
                         <div class="card-body">
-                            <h4 class="card-title">{{ value && value.name }}</h4>
-                            <p>Category-{{ value.categories && value.categories.length && value.categories[0].name }}</p>
-                            <p>Contact- {{ value.contact.formattedPhone || 'NA' }}</p>
-                            <p>Address- {{ GetFormattedAddressForVenue(value) }}</p>
+                            <div class="row">
+                                <div class="col-md-4">Search Time</div>
+                                <div class="col-md-4">Total Results</div>
+                                <div class="col-md-4">Search Query</div>
+                            </div>
+                            <div class="row">
+                                <span class="col-md-4">{{item.formattedSearchTime}}</span>
+                                <span class="col-md-4">{{item.formattedTotalResults}}</span>
+                                <span class="col-md-4"></span>
+                            </div>
                         </div>
                     </div>
                 </div>
+                <hr>
             </div>
         </div>
-        <!-- Search Results ends-->
-
-        <!-- Maps section -->
-        <div class="map-container col-md-7">
-            <div class="card-body">
-                <div class="input-group">
-                    <input class="form-control" id="iconLeft" #searchString type="text" placeholder="Utrecht,NL">
-                    <span class="input-group-btn">
-                        <button class="btn btn-primary" (click)="SearchVenues(searchString.value )" type="button">Go!</button>
-                    </span>
-                </div>
-            </div>
-            <div id="map"></div>
-        </div>
-        <!-- Maps section ends-->
-
+        <!-- Search Results logging ends-->
     </div>
 </div>

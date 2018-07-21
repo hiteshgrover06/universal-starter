@@ -9,10 +9,6 @@ import { TransferHttpCacheModule } from '@nguniversal/common';
 
 import * as Services from '../services/index';
 
-// import { HttpInterceptor } from '../services/httpInterceptor';
-// import { FourSquareService } from '../services/fourSquareService';
-// import { MapsService } from '../services/mapService';
-
 @NgModule({
   declarations: [
     AppComponent,
@@ -28,7 +24,7 @@ import * as Services from '../services/index';
     HttpModule,
     TransferHttpCacheModule,
   ],
-  providers: [Services.HttpInterceptor, Services.FourSquareService, Services.MapsService],
+  providers: [Services.HttpInterceptor, Services.SearchEngineService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

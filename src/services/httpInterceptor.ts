@@ -12,18 +12,22 @@ export class HttpInterceptor {
             btoa('username:password'));
     }
 
-    get(url) {
+    get(url, customHeaders: any) {
         const headers = new Headers();
-        this.createAuthorizationHeader(headers);
-        return this.http.get(url, {
-        });
+
+        if (customHeaders) {
+            for (let key in customHeaders) {
+                if (customHeaders.hasOwnProperty(key)) {
+                    headers.append(key, customHeaders[key]);
+                }
+            }
+        }
+        return this.http.get(url, customHeaders ? {
+            headers: headers
+        } : null);
     }
 
     post(url, data) {
-        const headers = new Headers();
-        this.createAuthorizationHeader(headers);
-        return this.http.post(url, data, {
-            headers: headers
-        });
+        return this.http.post(url, data);
     }
 }

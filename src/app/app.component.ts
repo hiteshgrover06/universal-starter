@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import * as Services from '../services/index';
-
+import { SearchEngine } from '../declarations/enums';
 @Component({
   selector: 'app-root',
   templateUrl: 'appTemplate.html',
@@ -10,64 +10,41 @@ import * as Services from '../services/index';
 
 export class AppComponent {
 
-  public VenuesData: Array<Venue>;
+  public SearchData: SearchResult;
+  public SearchStatisticsData: { [searchEngine: string]: SearchInformation[]; } = {};
+  public selectedSearchEngine: number;
 
-  constructor(private fourSquareService: Services.FourSquareService,
-    private mapService: Services.MapsService) {
-
+  constructor(private searchEngineService: Services.SearchEngineService) {
+    this.selectedSearchEngine = SearchEngine.Google;
   }
 
+  private logSearchStasticsInLocalStorage = (searchInformation: SearchInformation,
+    searchEngineType: SearchEngine) => {
+    const searchEngineKey = (<SearchEngine>searchEngineType).toString();
 
-  ngOnInit() {
-    this.mapService.InitMap();
-    this.mapService.GetLocation().then(this.searchVenues);
-  }
-
-  private onVenuesOk = (response) => {
-    console.log('response', response);
-    const data: VenueResponse<Venue> = response && response.json();
-    if (data && data.meta && data.meta.code === 200) {
-      this.VenuesData = data.response.venues;
-      this.VenuesData.forEach((venue: Venue) => {
-
-      });
-      this.mapService.PlotMarkers(this.VenuesData);
-    } else {
-
+    if (!this.SearchStatisticsData[searchEngineKey]) {
+      this.SearchStatisticsData[searchEngineKey] = [];
     }
+    this.SearchStatisticsData[searchEngineKey].push(searchInformation);
   }
 
-  private onVenuesNOk = (response) => {
+  // ngOnInit() {
 
-  }
-  private searchVenues = (position) => {
-    const lat = position.coords.latitude;
-    const lng = position.coords.longitude;
+  // }
 
-    this.fourSquareService.GetVenuesForLatLng(lat, lng).subscribe(response => {
-      this.onVenuesOk(response);
+  public Search = (queryString: string) => {
+    this.searchEngineService.QueryResults(queryString, this.selectedSearchEngine).subscribe(response => {
+      this.SearchData = response.json();
+      this.logSearchStasticsInLocalStorage(this.SearchData.searchInformation, this.selectedSearchEngine);
     }, error => {
       console.log('error', error);
     });
   }
 
-
-  public SearchVenues = (searchParam: string) => {
-    searchParam &&
-      this.fourSquareService.GetVenuesForNearLocation(searchParam.trim()).subscribe(response => {
-        this.onVenuesOk(response);
-      }, error => {
-        console.log('error', error);
-      });
+  public GetSelectedSearchEngineStats = () => {
+    return this.SearchStatisticsData[this.selectedSearchEngine.toString()];
   }
 
-  public GetFormattedAddressForVenue(venue: Venue) {
-    return venue.location && venue.location.formattedAddress && venue.location.formattedAddress.length &&
-      venue.location.formattedAddress.join(', ');
-  }
 
-  public GetVenueCategoryIcon(venue: Venue): string {
-    const primaryCat = venue.categories && venue.categories.length && venue.categories.filter(item => item.primary);
-    return primaryCat && primaryCat.length && primaryCat[0].icon.prefix.concat(primaryCat[0].icon.suffix, '&oauth_token=JVIRXGITAAMFDCNOC2ELHQKTHWWQSNU02LCYPBV1B01AUGLT&v=20180422');
-  }
+
 }
