@@ -16,7 +16,7 @@ export class HttpInterceptor {
         const headers = new Headers();
 
         if (customHeaders) {
-            for (let key in customHeaders) {
+            for (const key in customHeaders) {
                 if (customHeaders.hasOwnProperty(key)) {
                     headers.append(key, customHeaders[key]);
                 }
