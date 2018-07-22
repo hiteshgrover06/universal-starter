@@ -1,31 +1,54 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import * as Services from '../services/index';
 import { SearchEngine } from '../declarations/enums';
+
+
+const searchEngineTypeMetaData = [
+  { id: 0, value: 'Google Search' },
+  { id: 1, value: 'Bing Search' },
+  { id: 2, value: 'Yahoo Search' }
+];
+
 @Component({
   selector: 'app-root',
   templateUrl: 'appTemplate.html',
   styles: ['styles.css']
 })
 
-
 export class AppComponent {
 
   public SearchData: SearchResult;
   public SearchStatisticsData: { [searchEngine: string]: SearchInformation[]; } = {};
-  public selectedSearchEngine: number;
+  public selectedSearchEngine: KeyValuePair;
+  public searchCallCompleted: Boolean;
+  public searchEngineTypes: Array<KeyValuePair>;
 
   constructor(private searchEngineService: Services.SearchEngineService) {
-    this.selectedSearchEngine = SearchEngine.Google;
+    this.searchEngineTypes = searchEngineTypeMetaData;
+    this.selectedSearchEngine = searchEngineTypeMetaData[0];
   }
 
   private logSearchStasticsInLocalStorage = (searchInformation: SearchInformation,
-    searchEngineType: SearchEngine) => {
+    searchEngineType: SearchEngine, searchText: string) => {
     const searchEngineKey = (<SearchEngine>searchEngineType).toString();
 
     if (!this.SearchStatisticsData[searchEngineKey]) {
       this.SearchStatisticsData[searchEngineKey] = [];
     }
-    this.SearchStatisticsData[searchEngineKey].push(searchInformation);
+    this.SearchStatisticsData[searchEngineKey].push(Object.assign({}, searchInformation, { searchText }));
+  }
+
+  private fireSearch = (apiMethod: Function, queryString: string) => {
+
+    apiMethod(queryString).subscribe(response => {
+      this.SearchData = response.json();
+      this.logSearchStasticsInLocalStorage(this.SearchData.searchInformation, this.selectedSearchEngine.id, queryString);
+      this.searchCallCompleted = true;
+    }, error => {
+      console.log('error', error);
+      this.searchCallCompleted = true;
+    });
+
   }
 
   // ngOnInit() {
@@ -33,16 +56,26 @@ export class AppComponent {
   // }
 
   public Search = (queryString: string) => {
-    this.searchEngineService.QueryResults(queryString, this.selectedSearchEngine).subscribe(response => {
-      this.SearchData = response.json();
-      this.logSearchStasticsInLocalStorage(this.SearchData.searchInformation, this.selectedSearchEngine);
-    }, error => {
-      console.log('error', error);
-    });
+    this.searchCallCompleted = false;
+
+    switch (this.selectedSearchEngine.id) {
+      case SearchEngine.Google: this.fireSearch(this.searchEngineService.GetGoogleResults, queryString);
+        break;
+      case SearchEngine.Bing: this.fireSearch(this.searchEngineService.GetBingResults, queryString);
+        break;
+
+      default: this.fireSearch(this.searchEngineService.GetGoogleResults, queryString);
+        break;
+    }
+
   }
 
   public GetSelectedSearchEngineStats = () => {
-    return this.SearchStatisticsData[this.selectedSearchEngine.toString()];
+    return this.SearchStatisticsData[this.selectedSearchEngine.id.toString()] || null;
+  }
+
+  public HasSearchResults = (): Boolean => {
+    return this.searchCallCompleted && this.SearchData && this.SearchData.items && this.SearchData.items.length > 0;
   }
 
 

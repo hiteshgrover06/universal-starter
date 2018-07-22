@@ -6,8 +6,8 @@
 // }
 
 export enum SearchEngine {
-    Google = 0,
-    Bing = 1,
-    Yahoo = 2,
-    DuckDuck = 3
+    Google    ,
+    Bing      ,
+    Yahoo     ,
+    DuckDuck
 }

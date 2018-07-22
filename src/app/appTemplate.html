@@ -1,72 +1,101 @@
+<style>
+    input[type=text] {
+        border: 0;
+        border-radius: 0;
+        border-bottom: 1px solid #FF6200;
+        background: whitesmoke;
+    }
+
+    .active-cyan input[type=text]:focus:not([readonly]) {
+        border-bottom: 1px solid #4dd0e1;
+        box-shadow: 0 1px 0 0 #4dd0e1;
+    }
+
+    .active-cyan .fa,
+    .active-cyan-2 .fa {
+        color: #4dd0e1;
+    }
+
+    .fa:hover {
+        cursor: pointer;
+    }
+</style>
 <div class="container">
-    <div class="row">
+    <br>
+    <div class="row result-section">
         <!-- Example single danger button -->
         <div class="btn-group">
             <button type="button" class="btn btn-danger dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                Action
+                {{ selectedSearchEngine.value }}
             </button>
             <div class="dropdown-menu">
-                <a class="dropdown-item" href="#">Action</a>
-                <a class="dropdown-item" href="#">Another action</a>
-                <a class="dropdown-item" href="#">Something else here</a>
-                <div class="dropdown-divider"></div>
-                <a class="dropdown-item" href="#">Separated link</a>
+                <li *ngFor="let item of searchEngineTypes" [attr.id]="item.id" [value]="item.value" class="dropdown-item" (click)="selectedSearchEngine=item;">{{item.value}}</li>
             </div>
         </div>
-        <div class="col-md-8">
-            <div class="input-group">
-                <input class="form-control" id="iconLeft" #searchString type="text" placeholder="Utrecht,NL">
-                <span class="input-group-btn" >
-                        <i class="fab fa-searchengin"></i>
-                    <!-- <span class="glyphicon glyphicon-search" (click)="Search(searchString.value)"></span> -->
-                    <button class="btn btn-outline-primary" (click)="Search(searchString.value)" type="button">I feel lucky!</button>
+
+        <div class="col-md-9">
+            <div class="input-group active-cyan">
+                <input class="form-control" id="iconLeft" #searchString type="text" placeholder="Search...">
+                <span class="input-group-btn" (click)="Search(searchString.value)">
+                    <i class="fa fa-search" aria-hidden="true"></i>
                 </span>
             </div>
         </div>
     </div>
-    <div class="row">
+
+
+    <div class="row result-section">
 
         <!-- Search Results -->
-        <div class="col-md-8 result-section" *ngIf="SearchData && SearchData.items; else elseBlock">
-            <div> About {{SearchData.searchInformation.formattedTotalResults}} results ({{SearchData.searchInformation.formattedSearchTime}}
-                seconds)
+        <div class="col-md-8 " *ngIf="searchCallCompleted; else elseBlock">
+            <div *ngIf="HasSearchResults(); else showNoResult">
+                <div> About {{SearchData.searchInformation.formattedTotalResults}} results ({{SearchData.searchInformation.formattedSearchTime}}
+                    seconds)
+                </div>
+                &nbsp;
+                <div *ngFor='let value of SearchData.items; trackBy: index;'>
+                    <div id="{{ value.id }}">
+                        <h5 [innerHTML]="value.htmlTitle"></h5>
+                        <span class="" [innerHTML]="value.htmlSnippet"></span>
+                        <a href="{{value.link}}">{{value.link}}</a>
+                    </div>
+                    <hr>
+                </div>
             </div>
-            <div *ngFor='let value of SearchData.items; trackBy: index;'>
-                <div id="{{ value.id }}">
-                    <h5 [innerHTML]="value.htmlTitle"></h5>
-                    <span class="" [innerHTML]="value.htmlSnippet"></span>
-                    <a href="{{value.link}}">{{value.link}}</a>
-                </div> &nbsp;
-            </div>
+            <ng-template class="col-md-8 " #showNoResult>
+               Sorry, No results found matching that search text.
+            </ng-template>
 
-            <ng-template #elseBlock>Sorry, no results found for your query!</ng-template>
         </div>
+        <ng-template class="col-md-8 " #elseBlock>
+            <img src="../assets/start.jpg">
+        </ng-template>
 
         <!-- Search Results ends-->
 
         <!-- Search Results logging-->
-        <div class="col-md-4" *ngIf="GetSelectedSearchEngineStats().length">
+        <div class="col-md-4" *ngIf="GetSelectedSearchEngineStats()">
             Search History
-            <div *ngFor='let item of GetSelectedSearchEngineStats(); trackBy: index;'>
-                <div id="{{index}}">
-                    <div class="card col-md-">
-                        <div class="card-body">
-                            <div class="row">
-                                <div class="col-md-4">Search Time</div>
-                                <div class="col-md-4">Total Results</div>
-                                <div class="col-md-4">Search Query</div>
-                            </div>
-                            <div class="row">
-                                <span class="col-md-4">{{item.formattedSearchTime}}</span>
-                                <span class="col-md-4">{{item.formattedTotalResults}}</span>
-                                <span class="col-md-4"></span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <hr>
+            <div class="table-responsive-ss">
+                <table class="table table-sm table-dark">
+                    <thead class="thead-light">
+                        <tr class="table-info">
+                            <th scope="col">Search Time</th>
+                            <th scope="col">Total Results</th>
+                            <th scope="col">Search Query</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor='let item of GetSelectedSearchEngineStats(); trackBy: index;'>
+                            <td>{{item.formattedSearchTime}} secs</td>
+                            <td>{{item.formattedTotalResults}}</td>
+                            <td> {{item.searchText}} </td>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
+
+
         </div>
         <!-- Search Results logging ends-->
     </div>
-</div>

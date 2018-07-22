@@ -8,7 +8,14 @@ declare interface SearchInformation {
     formattedTotalResults: string;
     searchTime: number;
     totalResults: string;
+    searchText: string;
 }
+
+declare interface KeyValuePair {
+    id: number;
+    value: string;
+}
+
 declare interface Item {
     kind: string;
     title: string;
