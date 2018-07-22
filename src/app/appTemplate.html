@@ -35,7 +35,7 @@
 
         <div class="col-md-9">
             <div class="input-group active-cyan">
-                <input class="form-control" id="iconLeft" #searchString type="text" placeholder="Search...">
+                <input class="form-control" id="iconLeft" #searchString type="text" (keyup.enter)="Search(searchString.value)" placeholder="Search...">
                 <span class="input-group-btn" (click)="Search(searchString.value)">
                     <i class="fa fa-search" aria-hidden="true"></i>
                 </span>
@@ -68,7 +68,9 @@
 
         </div>
         <ng-template class="col-md-8 " #elseBlock>
-            <img src="../assets/start.jpg">
+            <!-- <img class="img-fluid" alt="Responsive image" width="100%" height="100%" src="../assets/start.jpg"> -->
+
+            Start your quest by typing the query above....
         </ng-template>
 
         <!-- Search Results ends-->

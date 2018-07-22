@@ -30,6 +30,4 @@ export class SearchEngineService {
 
         return this.httpInterceptor.get(url, headers);
     }
-
-
 }

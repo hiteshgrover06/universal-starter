@@ -41,7 +41,7 @@ export class AppComponent {
   private fireSearch = (apiMethod: Function, queryString: string) => {
 
     apiMethod(queryString).subscribe(response => {
-      this.SearchData = response.json();
+      this.SearchData = this.mapResponse(response);
       this.logSearchStasticsInLocalStorage(this.SearchData.searchInformation, this.selectedSearchEngine.id, queryString);
       this.searchCallCompleted = true;
     }, error => {
@@ -51,12 +51,53 @@ export class AppComponent {
 
   }
 
+  private mapResponse = (response: any): SearchResult => {
+    const data = response.json();
+
+    switch (this.selectedSearchEngine.id) {
+
+      case SearchEngine.Google: return data;
+        break;
+
+      case SearchEngine.Bing: return this.mapBingSearchData(data);
+        break;
+
+      default: return data;
+        break;
+    }
+
+  }
+
+  private mapBingSearchData(data: any): SearchResult {
+    const searchInformation: SearchInformation = {
+      searchText: data.queryContext.originalQuery,
+      formattedTotalResults: data.webPages.totalEstimatedMatches
+    };
+
+    const items: Array<Item> = [];
+    (data.webPages.value || []).forEach(value => {
+      items.push({
+        kind: value,
+        title: value.name,
+        htmlTitle: value.value,
+        link: value.url,
+        displayLink: value.displayUrl,
+        htmlSnippet: value.snippet,
+        cacheId: value.id,
+        formattedUrl: value.displayUrl,
+        htmlFormattedUrl: value.url
+      });
+    });
+
+    return { searchInformation, items };
+  }
   // ngOnInit() {
 
   // }
 
   public Search = (queryString: string) => {
     this.searchCallCompleted = false;
+    this.SearchData = null;
 
     switch (this.selectedSearchEngine.id) {
       case SearchEngine.Google: this.fireSearch(this.searchEngineService.GetGoogleResults, queryString);

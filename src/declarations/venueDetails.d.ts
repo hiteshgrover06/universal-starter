@@ -4,11 +4,11 @@ declare interface SearchResult {
 }
 
 declare interface SearchInformation {
-    formattedSearchTime: string;
+    formattedSearchTime?: string;
     formattedTotalResults: string;
-    searchTime: number;
-    totalResults: string;
-    searchText: string;
+    searchTime?: number;
+    totalResults?: string;
+    searchText?: string;
 }
 
 declare interface KeyValuePair {
@@ -26,7 +26,7 @@ declare interface Item {
     cacheId: string;
     formattedUrl: string;
     htmlFormattedUrl: string;
-    pagemap: {
+    pagemap?: {
         metatags: { progid: string; originator: string }[]
     }
 }
