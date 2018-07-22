@@ -7,7 +7,7 @@
                 {{ selectedSearchEngine.value }}
             </button>
             <div class="dropdown-menu">
-                <li *ngFor="let item of searchEngineTypes" [attr.id]="item.id" [value]="item.value" class="dropdown-item" (click)="selectedSearchEngine=item;">{{item.value}}</li>
+                <li *ngFor="let item of searchEngineTypes" [attr.id]="item.id" [value]="item.value" class="dropdown-item" (click)="onSearchEngineChanged(item, searchString.value)">{{item.value}}</li>
             </div>
         </div>
 

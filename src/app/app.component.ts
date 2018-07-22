@@ -89,20 +89,29 @@ export class AppComponent {
 
   // }
 
-  public Search = (queryString: string) => {
-    this.searchCallCompleted = false;
-    this.SearchData = null;
-
-    switch (this.selectedSearchEngine.id) {
-      case SearchEngine.Google: this.fireSearch(this.searchEngineService.GetGoogleResults, queryString);
-        break;
-      case SearchEngine.Bing: this.fireSearch(this.searchEngineService.GetBingResults, queryString);
-        break;
-
-      default: this.fireSearch(this.searchEngineService.GetGoogleResults, queryString);
-        break;
+  public onSearchEngineChanged = (item: KeyValuePair, searchText: string) => {
+    this.selectedSearchEngine = item;
+    if (searchText) {
+      this.Search(searchText);
     }
+  }
 
+  public Search = (queryString: string) => {
+    if (queryString.trim()) {
+
+      this.searchCallCompleted = false;
+      this.SearchData = null;
+
+      switch (this.selectedSearchEngine.id) {
+        case SearchEngine.Google: this.fireSearch(this.searchEngineService.GetGoogleResults, queryString.trim());
+          break;
+        case SearchEngine.Bing: this.fireSearch(this.searchEngineService.GetBingResults, queryString.trim());
+          break;
+
+        default: this.fireSearch(this.searchEngineService.GetGoogleResults, queryString.trim());
+          break;
+      }
+    }
   }
 
   public GetSelectedSearchEngineStats = () => {
