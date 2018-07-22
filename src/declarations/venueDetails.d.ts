@@ -1,6 +1,9 @@
 declare interface SearchResult {
     searchInformation: SearchInformation;
-    items: Array<Item>
+    items: Array<Item>;
+    searchText?: string;
+    browser?: string;
+    timeStamp?: string;
 }
 
 declare interface SearchInformation {
@@ -8,7 +11,6 @@ declare interface SearchInformation {
     formattedTotalResults: string;
     searchTime?: number;
     totalResults?: string;
-    searchText?: string;
 }
 
 declare interface KeyValuePair {

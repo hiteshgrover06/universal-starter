@@ -61,3 +61,11 @@ body, html {
       padding: 20px;
     }
 
+    .table thead th{
+        vertical-align: top;
+    }
+
+    a{
+        text-overflow: ellipsis;
+    word-wrap: break-word;
+    }

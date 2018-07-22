@@ -47,7 +47,7 @@
     <div class="row result-section">
 
         <!-- Search Results -->
-        <div class="col-md-8 " *ngIf="searchCallCompleted; else elseBlock">
+        <div class="col-md-7" *ngIf="searchCallCompleted; else elseBlock">
             <div *ngIf="HasSearchResults(); else showNoResult">
                 <div> About {{SearchData.searchInformation.formattedTotalResults}} results ({{SearchData.searchInformation.formattedSearchTime}}
                     seconds)
@@ -55,49 +55,61 @@
                 &nbsp;
                 <div *ngFor='let value of SearchData.items; trackBy: index;'>
                     <div id="{{ value.id }}">
-                        <h5 [innerHTML]="value.htmlTitle"></h5>
+                        <h5 [innerHTML]="value.htmlTitle || value.title"></h5>
                         <span class="" [innerHTML]="value.htmlSnippet"></span>
-                        <a href="{{value.link}}">{{value.link}}</a>
+                        <a target="_blank" href="{{value.link}}">{{value.link}}</a>
                     </div>
                     <hr>
                 </div>
             </div>
-            <ng-template class="col-md-8 " #showNoResult>
-               Sorry, No results found matching that search text.
+            <ng-template #showNoResult>
+                <div class="col-md-7">
+                    Sorry, No results found matching that search text.
+                </div>
             </ng-template>
 
         </div>
-        <ng-template class="col-md-8 " #elseBlock>
+        <ng-template #elseBlock>
             <!-- <img class="img-fluid" alt="Responsive image" width="100%" height="100%" src="../assets/start.jpg"> -->
-
-            Start your quest by typing the query above....
+            <div class="col-md-7">
+                To see search results , Start your quest by typing the query above....
+            </div>
         </ng-template>
 
         <!-- Search Results ends-->
 
         <!-- Search Results logging-->
-        <div class="col-md-4" *ngIf="GetSelectedSearchEngineStats()">
-            Search History
+        <div class="col-md-5">
+            <h5>Search History</h5>
             <div class="table-responsive-ss">
                 <table class="table table-sm table-dark">
                     <thead class="thead-light">
                         <tr class="table-info">
-                            <th scope="col">Search Time</th>
+                            <th scope="col">Search Engine</th>
+                            <th scope="col">Timestamp</th>
+                            <th scope="col">Search delay</th>                            
                             <th scope="col">Total Results</th>
-                            <th scope="col">Search Query</th>
+                            <th scope="col">Search term</th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr *ngFor='let item of GetSelectedSearchEngineStats(); trackBy: index;'>
-                            <td>{{item.formattedSearchTime}} secs</td>
-                            <td>{{item.formattedTotalResults}}</td>
-                            <td> {{item.searchText}} </td>
+                            <td>{{item.browser}}</td>
+                            <td>{{item.timeStamp}}</td>
+                            <td>{{item.searchInformation.formattedSearchTime}} secs</td>
+                            <td>{{item.searchInformation.formattedTotalResults}}</td>
+                            <td>{{item.searchText}} </td>
+                        </tr>
+                        <tr *ngIf="!GetSelectedSearchEngineStats()">
+                            <td colspan="4">No search history available.</td>
                         </tr>
                     </tbody>
                 </table>
             </div>
-
-
         </div>
         <!-- Search Results logging ends-->
     </div>
+
+
+
+</div>

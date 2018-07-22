@@ -18,7 +18,7 @@ const searchEngineTypeMetaData = [
 export class AppComponent {
 
   public SearchData: SearchResult;
-  public SearchStatisticsData: { [searchEngine: string]: SearchInformation[]; } = {};
+  public SearchStatisticsData: { [searchEngine: string]: SearchResult[]; } = {};
   public selectedSearchEngine: KeyValuePair;
   public searchCallCompleted: Boolean;
   public searchEngineTypes: Array<KeyValuePair>;
@@ -28,21 +28,22 @@ export class AppComponent {
     this.selectedSearchEngine = searchEngineTypeMetaData[0];
   }
 
-  private logSearchStasticsInLocalStorage = (searchInformation: SearchInformation,
+  private logSearchStasticsInLocalStorage = (searchResult: SearchResult,
     searchEngineType: SearchEngine, searchText: string) => {
     const searchEngineKey = (<SearchEngine>searchEngineType).toString();
 
     if (!this.SearchStatisticsData[searchEngineKey]) {
       this.SearchStatisticsData[searchEngineKey] = [];
     }
-    this.SearchStatisticsData[searchEngineKey].push(Object.assign({}, searchInformation, { searchText }));
+    this.SearchStatisticsData[searchEngineKey].push(Object.assign({}, searchResult,
+      { searchText }, { browser: this.selectedSearchEngine.value }, { timeStamp: new Date().toUTCString() }));
   }
 
   private fireSearch = (apiMethod: Function, queryString: string) => {
 
     apiMethod(queryString).subscribe(response => {
       this.SearchData = this.mapResponse(response);
-      this.logSearchStasticsInLocalStorage(this.SearchData.searchInformation, this.selectedSearchEngine.id, queryString);
+      this.logSearchStasticsInLocalStorage(this.SearchData, this.selectedSearchEngine.id, queryString);
       this.searchCallCompleted = true;
     }, error => {
       console.log('error', error);
@@ -55,22 +56,15 @@ export class AppComponent {
     const data = response.json();
 
     switch (this.selectedSearchEngine.id) {
-
       case SearchEngine.Google: return data;
-        break;
-
       case SearchEngine.Bing: return this.mapBingSearchData(data);
-        break;
-
       default: return data;
-        break;
     }
 
   }
 
   private mapBingSearchData(data: any): SearchResult {
     const searchInformation: SearchInformation = {
-      searchText: data.queryContext.originalQuery,
       formattedTotalResults: data.webPages.totalEstimatedMatches
     };
 
@@ -118,7 +112,5 @@ export class AppComponent {
   public HasSearchResults = (): Boolean => {
     return this.searchCallCompleted && this.SearchData && this.SearchData.items && this.SearchData.items.length > 0;
   }
-
-
 
 }
