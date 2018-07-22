@@ -65,11 +65,11 @@ export class AppComponent {
 
   private mapBingSearchData(data: any): SearchResult {
     const searchInformation: SearchInformation = {
-      formattedTotalResults: data.webPages.totalEstimatedMatches
+      formattedTotalResults: data.webPages && data.webPages.totalEstimatedMatches
     };
 
     const items: Array<Item> = [];
-    (data.webPages.value || []).forEach(value => {
+    (data.webPages && data.webPages.value || []).forEach(value => {
       items.push({
         kind: value,
         title: value.name,

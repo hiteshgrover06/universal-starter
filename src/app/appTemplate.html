@@ -1,25 +1,3 @@
-<style>
-    input[type=text] {
-        border: 0;
-        border-radius: 0;
-        border-bottom: 1px solid #FF6200;
-        background: whitesmoke;
-    }
-
-    .active-cyan input[type=text]:focus:not([readonly]) {
-        border-bottom: 1px solid #4dd0e1;
-        box-shadow: 0 1px 0 0 #4dd0e1;
-    }
-
-    .active-cyan .fa,
-    .active-cyan-2 .fa {
-        color: #4dd0e1;
-    }
-
-    .fa:hover {
-        cursor: pointer;
-    }
-</style>
 <div class="container">
     <br>
     <div class="row result-section">
@@ -49,7 +27,7 @@
         <!-- Search Results -->
         <div class="col-md-7" *ngIf="searchCallCompleted; else elseBlock">
             <div *ngIf="HasSearchResults(); else showNoResult">
-                <div> About {{SearchData.searchInformation.formattedTotalResults}} results ({{SearchData.searchInformation.formattedSearchTime}}
+                <div class="text-success"> About {{SearchData.searchInformation.formattedTotalResults}} results ({{SearchData.searchInformation.formattedSearchTime}}
                     seconds)
                 </div>
                 &nbsp;
@@ -63,7 +41,7 @@
                 </div>
             </div>
             <ng-template #showNoResult>
-                <div class="col-md-7">
+                <div class="col-md-7 text-danger">
                     Sorry, No results found matching that search text.
                 </div>
             </ng-template>
@@ -71,7 +49,7 @@
         </div>
         <ng-template #elseBlock>
             <!-- <img class="img-fluid" alt="Responsive image" width="100%" height="100%" src="../assets/start.jpg"> -->
-            <div class="col-md-7">
+            <div class="col-md-7 text-information">
                 To see search results , Start your quest by typing the query above....
             </div>
         </ng-template>
@@ -87,18 +65,28 @@
                         <tr class="table-info">
                             <th scope="col">Search Engine</th>
                             <th scope="col">Timestamp</th>
-                            <th scope="col">Search delay</th>                            
+                            <th scope="col">Search delay</th>
                             <th scope="col">Total Results</th>
                             <th scope="col">Search term</th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr *ngFor='let item of GetSelectedSearchEngineStats(); trackBy: index;'>
-                            <td>{{item.browser}}</td>
-                            <td>{{item.timeStamp}}</td>
-                            <td>{{item.searchInformation.formattedSearchTime}} secs</td>
-                            <td>{{item.searchInformation.formattedTotalResults}}</td>
-                            <td>{{item.searchText}} </td>
+                            <td>
+                                <span>{{item.browser || 'NA'}} </span>
+                            </td>
+                            <td>
+                                <span>{{item.timeStamp || 'NA' }} </span>
+                            </td>
+                            <td>
+                                <span>{{item.searchInformation.formattedSearchTime || 'NA' }} secs </span>
+                            </td>
+                            <td>
+                                <span>{{item.searchInformation.formattedTotalResults || 'NA'}} </span>
+                            </td>
+                            <td>
+                                <span>{{item.searchText}} </span>
+                            </td>
                         </tr>
                         <tr *ngIf="!GetSelectedSearchEngineStats()">
                             <td colspan="4">No search history available.</td>

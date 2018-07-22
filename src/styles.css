@@ -69,3 +69,26 @@ body, html {
         text-overflow: ellipsis;
     word-wrap: break-word;
     }
+
+    .active-cyan input[type=text] {
+        border: 0;
+        border-radius: 0;
+        border-bottom: 1px solid #FF6200;
+        background: whitesmoke;
+    }
+
+    .active-cyan input[type=text]:focus:not([readonly]) {
+        border-bottom: 1px solid #4dd0e1;
+        box-shadow: 0 1px 0 0 #4dd0e1;
+    }
+
+    .active-cyan .fa,
+    .active-cyan-2 .fa {
+        color: #4dd0e1;
+    }
+
+
+
+    .fa:hover {
+        cursor: pointer;
+    }
